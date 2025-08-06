@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<script src="https://unpkg.com/comlink@4.4.2/dist/umd/comlink.js"></script>
+<script >
+
+
+  function showMsgInParent(msg) {
+     var f = Comlink.wrap(Comlink.windowEndpoint(window.parent.window))
+     f.showMessage(msg).then(() => {
+       alert("iframe1: message sent to parent");
+     },
+    (reason)=> alert(`iframe1: error sending message to parent: ${reason}`))
+    .catch((err) => {
+       alert(`iframe1: error in showMsgInParent: ${err}`);
+     });
+  }
+</script>
+<input type="button" value="call top window" onclick="showMsgInParent('hello from iframe1')">
+<iframe id="iframe2-1" src="iframe2-1.html"></iframe>

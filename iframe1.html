@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+
+<script src="https://unpkg.com/comlink@4.4.2/dist/umd/comlink.js"></script>
+<script >
+  //import * as Comlink from "https://unpkg.com/comlink/dist/esm/comlink.mjs";
+  // import * as Comlink from "../../../../dist/esm/comlink.mjs";
+  function add(a, b) {
+    return a + b;
+  }
+  function substract(a, b) {
+    return a - b;
+  }
+  
+  function getFrameElementCSSDisplayAndReadyState(){
+    return ["block","complete"];
+  }
+
+  Comlink.expose({ add, substract, getFrameElementCSSDisplayAndReadyState }, Comlink.windowEndpoint(window.parent));
+
+  function showMsgInParent(msg) {
+     var f = Comlink.wrap(Comlink.windowEndpoint(window.parent.window))
+     f.showMessage(msg).then(() => {
+       alert("iframe: message sent to parent");
+     },
+    (reason)=> alert(`iframe: error sending message to parent: ${reason}`))
+    .catch((err) => {
+       alert(`iframe: error in showMsgInParent: ${err}`);
+     });
+  }
+  function showMsgInIframe2_1(msg) {
+
+     var f = Comlink.wrap(Comlink.windowEndpoint(window.parent.window.frames[1].frames[0]))
+     f.showMessage(msg).then(() => {
+       alert("iframe: message sent to parent");
+     },
+    (reason)=> alert(`iframe: error sending message to parent: ${reason}`))
+    .catch((err) => {
+       alert(`iframe: error in showMsgInParent: ${err}`);
+     });
+  }
+</script>
+<input type="button" value="call parent" onclick="showMsgInParent('hello from iframe')">
+
+<input type="button" value="call iframe2-1" onclick="showMsgInIframe2_1('hello from iframe 1')">
+
+<iframe id="iframe1-1" src="iframe1-1.html"></iframe>
